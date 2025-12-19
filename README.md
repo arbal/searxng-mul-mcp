@@ -25,19 +25,37 @@ A Model Context Protocol (MCP) server for SearXNG metasearch engine integration,
 
 ## Quick Start
 
-### NPM Usage
+### Local Installation
 
-#### Stdio Mode (Default)
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd searxng-mul-mcp
+   ```
 
-```bash
-SEARXNG_URL=https://your.searxng.com npx -y searxng-mul-mcp
-```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-#### HTTP Mode
+3. **Build the project:**
+   ```bash
+   npm run build
+   ```
 
-```bash
-SEARXNG_URL=https://your.searxng.com npx -y searxng-mul-mcp --transport=http --host=0.0.0.0 --port=3000
-```
+4. **Run the server:**
+
+   **Stdio Mode (Default):**
+   ```bash
+   export SEARXNG_URL=https://your.searxng.com
+   node build/index.js
+   ```
+
+   **HTTP Mode:**
+   ```bash
+   export SEARXNG_URL=https://your.searxng.com
+   node build/index.js --transport=http --host=0.0.0.0 --port=3000
+   ```
 
 ### Environment Variables
 
@@ -62,16 +80,15 @@ DEBUG=false
 
 ### Claude Desktop Configuration
 
-Add the following configuration to your Claude Desktop `claude_desktop_config.json` file:
-
-stdio mode:
+Add the following configuration to your Claude Desktop `claude_desktop_config.json` file.
+**Note:** Replace `/absolute/path/to/searxng-mul-mcp` with the actual path to your cloned repository.
 
 ```json
 {
   "mcpServers": {
     "searxng-mul-mcp": {
-      "command": "npx",
-      "args": ["-y", "searxng-mul-mcp"],
+      "command": "node",
+      "args": ["/absolute/path/to/searxng-mul-mcp/build/index.js"],
       "env": {
         "SEARXNG_URL": "https://your.searxng.com",
         "USERNAME": "your_username",
@@ -116,26 +133,26 @@ export PASSWORD=your_password
 - Full CORS support for cross-origin requests
 - Suitable for web-based integrations and modern MCP clients
 
-## Installation
+## Docker Deployment
 
-### From Source
+To run with Docker, build the image locally:
 
-```bash
-git clone <repository-url>
-cd searxng-mul-mcp
-npm install
-npm run build
-npm start
-```
+1. **Build the image:**
+   ```bash
+   docker build -t searxng-mul-mcp .
+   ```
 
-### Docker Deployment
+2. **Run the container:**
+   ```bash
+   docker run -e SEARXNG_URL=https://your.searxng.com -p 3000:3000 searxng-mul-mcp
+   ```
 
-Create a `docker-compose.yml` file:
+Or using `docker-compose.yml`:
 
 ```yaml
 services:
   searxng-mul-mcp:
-    image: ghcr.io/jae-jae/searxng-mul-mcp:latest
+    build: .
     environment:
       - SEARXNG_URL=https://your.searxng.com
       # Optional: Basic Auth
@@ -148,7 +165,7 @@ services:
 Run with:
 
 ```bash
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 ## MCP Tool Usage
@@ -286,7 +303,7 @@ The server provides structured logging with configurable levels:
 Enable debug logging for detailed troubleshooting:
 
 ```bash
-DEBUG=true npx searxng-mul-mcp
+DEBUG=true node build/index.js
 ```
 
 ## License
